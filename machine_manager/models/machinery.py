@@ -18,93 +18,101 @@
 ##############################################################################
 
 
-from openerp import models, fields, _
+from openerp import _
+from openerp.osv import fields, osv
 
 
-class Machinery(models.Model):
+class Machinery(osv.Model):
     _name = "machinery"
     _description = "Holds records of Machines"
 
     def _def_company(self):
         return self.env.user.company_id.id
 
-    name = fields.Char('Machine Name', required=True)
-    company = fields.Many2one('res.company', 'Company', required=True,
-                              default=_def_company)
-    assetacc = fields.Many2one('account.account', string='Asset Account')
-    depracc = fields.Many2one('account.account', string='Depreciation Account')
-    year = fields.Char('Year')
-    model = fields.Char('Model')
-    product = fields.Many2one(
-        comodel_name='product.product', string='Associated product',
-        help="This product will contain information about the machine such as"
-        " the manufacturer.")
-    manufacturer = fields.Many2one(
-        comodel_name='res.partner', related='product.manufacturer',
-        readonly=True, help="Manufacturer is related to the associated product"
-        " defined for the machine.")
-    serial_char = fields.Char('Product Serial #')
-    serial = fields.Many2one('stock.production.lot', string='Product Serial #',
+    _columns = {
+        'name': fields.char('Machine Name', required=True),
+        'company': fields.many2one('res.company', 'Company', required=True,
+                              default=_def_company),
+        'assetacc': fields.many2one('account.account', string='Asset Account'),
+        'depracc': fields.many2one('account.account',
+                                   string='Depreciation Account'),
+        'year': fields.char('Year'),
+        'model': fields.char('Model'),
+        'product': fields.many2one( comodel_name='product.product',
+                                    string='Associated product',
+                                    help="This product will contain information"
+                                         " about the machine such as the"
+                                         " manufacturer.")
+        'manufacturer': fields.many2one(comodel_name='res.partner',
+                                        related='product.manufacturer',
+                                        readonly=True, help="Manufacturer is "
+                                            "related to the associated product"
+                                            " defined for the machine.")
+        'serial_char': fields.char('Product Serial #')
+        'serial': fields.many2one('stock.production.lot', string='Product Serial #',
                              domain="[('product_id', '=', product)]")
-    model_type = fields.Many2one('machine.model', 'Type')
-    status = fields.Selection([('active', 'Active'), ('inactive', 'InActive'),
+        'model_type': fields.many2one('machine.model', 'Type')
+        'status': fields.Selection([('active', 'Active'), ('inactive', 'InActive'),
                                ('outofservice', 'Out of Service')],
                               'Status', required=True, default='active')
-    ownership = fields.Selection([('own', 'Own'), ('lease', 'Lease'),
+        'ownership': fields.Selection([('own', 'Own'), ('lease', 'Lease'),
                                   ('rental', 'Rental')],
                                  'Ownership', default='own', required=True)
-    bcyl = fields.Float('Base Cycles', digits=(16, 3),
+        'bcyl': fields.Float('Base Cycles', digits=(16, 3),
                         help="Last recorded cycles")
-    bdate = fields.Date('Record Date',
+        'bdate': fields.date('Record Date',
                         help="Date on which the cycles is recorded")
-    purch_date = fields.Date('Purchase Date',
+        'purch_date': fields.date('Purchase Date',
                              help="Machine's date of purchase")
-    purch_cost = fields.Float('Purchase Value', digits=(16, 2))
-    purch_partner = fields.Many2one('res.partner', 'Purchased From')
-    purch_inv = fields.Many2one('account.invoice', string='Purchase Invoice')
-    purch_cycles = fields.Integer('Cycles at Purchase')
-    actcycles = fields.Integer('Actual Cycles')
-    deprecperc = fields.Float('Depreciation in %', digits=(10, 2))
-    deprecperiod = fields.Selection([('monthly', 'Monthly'),
+        'purch_cost': fields.Float('Purchase Value', digits=(16, 2))
+        'purch_partner': fields.many2one('res.partner', 'Purchased From')
+        'purch_inv': fields.many2one('account.invoice', string='Purchase Invoice')
+        'purch_cycles': fields.Integer('Cycles at Purchase')
+        'actcycles': fields.Integer('Actual Cycles')
+        'deprecperc': fields.Float('Depreciation in %', digits=(10, 2))
+        'deprecperiod': fields.Selection([('monthly', 'Monthly'),
                                      ('quarterly', 'Quarterly'),
                                      ('halfyearly', 'Half Yearly'),
                                      ('annual', 'Yearly')], 'Depr. period',
                                     default='annual', required=True)
-    primarymeter = fields.Selection([('calendar', 'Calendar'),
+        'primarymeter': fields.Selection([('calendar', 'Calendar'),
                                      ('cycles', 'Cycles'),
                                      ('hourmeter', 'Hour Meter')],
                                     'Primary Meter', default='cycles',
                                     required=True)
-    warrexp = fields.Date('Date', help="Expiry date for warranty of product")
-    warrexpcy = fields.Integer('(or) cycles',
+        'warrexp': fields.date('Date', help="Expiry date for warranty of product")
+        'warrexpcy': fields.Integer('(or) cycles',
                                help="Expiry cycles for warranty of product")
-    location = fields.Many2one('stock.location', 'Stk Location',
+        'location': fields.many2one('stock.location', 'Stk Location',
                                help="This association is necessary if you want"
                                " to make repair orders with the machine")
-    enrolldate = fields.Date('Enrollment date', required=True,
+        'enrolldate': fields.date('Enrollment date', required=True,
                              default=lambda
-                             self: fields.Date.context_today(self))
-    ambit = fields.Selection([('local', 'Local'), ('national', 'National'),
+                             self: fields.date.context_today(self))
+        'ambit': fields.Selection([('local', 'Local'), ('national', 'National'),
                               ('international', 'International')],
                              'Ambit', default='local')
-    card = fields.Char('Card')
-    cardexp = fields.Date('Card Expiration')
-    frame = fields.Char('Frame Number')
-    phone = fields.Char('Phone number')
-    mac = fields.Char('MAC Address')
-    insurance = fields.Char('Insurance Name')
-    policy = fields.Char('Machine policy')
-    users = fields.One2many('machinery.users', 'machine', 'Machine Users')
-    power = fields.Char('Power (Kw)')
+        'card': fields.char('Card')
+        'cardexp': fields.date('Card Expiration')
+        'frame': fields.char('Frame Number')
+        'phone': fields.char('Phone number')
+        'mac': fields.char('MAC Address')
+        'insurance': fields.char('Insurance Name')
+        'policy': fields.char('Machine policy')
+        'users': fields.one2many('machinery.users', 'machine', 'Machine Users')
+        'power': fields.char('Power (Kw)')
+    }
 
 
-class MachineryUsers(models.Model):
+class MachineryUsers(osv.Model):
     _name = 'machinery.users'
 
-    m_user = fields.Many2one('res.users', 'User')
-    machine = fields.Many2one('machinery', 'Machine')
-    start_date = fields.Date('Homologation Start Date')
-    end_date = fields.Date('Homologation End Date')
+    _columns = {
+        'm_user': fields.many2one('res.users', 'User')
+        'machine': fields.many2one('machinery', 'Machine')
+        'start_date': fields.date('Homologation Start Date')
+        'end_date': fields.date('Homologation End Date')
+    }
 
     _sql_constraints = [
         ('uniq_machine_user', 'unique(machine, m_user)',
