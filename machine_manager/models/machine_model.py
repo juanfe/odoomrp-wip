@@ -17,12 +17,14 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp.osv import fields, osv
 
 
-class MachineModel(models.Model):
+class MachineModel(osv.Model):
     _name = 'machine.model'
     _description = 'Machine model'
 
-    name = fields.Char('Name')
-    model_type = fields.Char('Type')
+    _columns = {
+        'name': fields.char('Name'),
+        'model_type': fields.char('Type'),
+    }

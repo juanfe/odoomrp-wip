@@ -17,11 +17,14 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp.osv import fields, osv
 
 
-class ProductTemplate(models.Model):
+class ProductTemplate(osv.Model):
     _inherit = "product.template"
 
-    machine_ok = fields.Boolean('Can be a Machine', help="Determines if the "
-                                "product is related with a machine.")
+    _columns = {
+        'machine_ok': fields.boolean('Can be a Machine',
+                                     help="Determines if the product is "
+                                          "related with a machine."),
+    }
