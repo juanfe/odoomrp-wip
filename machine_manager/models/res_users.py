@@ -19,11 +19,13 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp.osv import fields, osv
 
 
-class ResUsers(models.Model):
+class ResUsers(osv.Model):
     _inherit = 'res.users'
 
-    machines = fields.Many2many('machinery', 'machine_user_rel', 'user_id',
-                                'machine_id', 'Machines')
+    _columns = {
+         'machines': fields.many2many('machinery', 'machine_user_rel',
+                                      'user_id', 'machine_id', 'Machines'),
+    }
