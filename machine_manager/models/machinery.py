@@ -87,8 +87,11 @@ class Machinery(osv.Model):
                                help="This association is necessary if you want"
                                " to make repair orders with the machine"),
         'enrolldate': fields.date('Enrollment date', required=True,
-                             default=lambda
-                             self: fields.date.context_today(self)),
+                                  default=lambda self:
+                                      fields.date.today(self)),
+                                  # TODO change by context_today like of way
+                                  #    fields.date.context_today(self)),
+                                  # context_today require (model, cr, uid)
         'ambit': fields.selection([('local', 'Local'), ('national', 'National'),
                               ('international', 'International')],
                              'Ambit', default='local'),
