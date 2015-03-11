@@ -17,13 +17,16 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api
+from openerp import api
+from openerp.osv import fields, osv
 
 
-class MrpWorkcenter(models.Model):
+class MrpWorkcenter(osv.Model):
     _inherit = 'mrp.workcenter'
 
-    machine = fields.Many2one('machinery', string='Machine')
+    _columns = {
+        'machine': fields.many2one('machinery', string='Machine'),
+    }
 
     @api.one
     @api.onchange('machine')
