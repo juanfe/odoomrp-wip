@@ -17,10 +17,13 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, exceptions, _
+from openerp import exceptions
+from openerp.tools.translate import _
+from openerp.osv import fields, osv
+from openerp import api
 
 
-class MrpProduction(models.Model):
+class MrpProduction(osv.Model):
     _inherit = 'mrp.production'
 
     @api.model
@@ -64,7 +67,9 @@ class MrpProduction(models.Model):
         return res
 
 
-class MrpProductionProductLine(models.Model):
+class MrpProductionProductLine(osv.Model):
     _inherit = 'mrp.production.product.line'
 
-    lot = fields.Many2one('stock.production.lot', 'Reserved Lot')
+    _columns = {
+        'lot': fields.many2one('stock.production.lot', 'Reserved Lot'),
+    }
