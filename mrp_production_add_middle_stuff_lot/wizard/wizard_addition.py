@@ -17,13 +17,18 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, exceptions, _
+from openerp import exceptions
+from openerp import api
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 
 
-class WizProductionProductLine(models.TransientModel):
+class WizProductionProductLine(osv.TransientModel):
     _inherit = 'wiz.production.product.line'
 
-    lot = fields.Many2one('stock.production.lot', 'Reserved Lot')
+    _columns = {
+        'lot': fields.many2one('stock.production.lot', 'Reserved Lot'),
+    }
 
     def _prepare_product_addition(self, product, product_qty, production):
         addition_vals = super(
