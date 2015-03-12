@@ -19,10 +19,9 @@
 #
 ##############################################################################
 
-from openerp import models
+from openerp.osv import osv
 
-
-class MrpProductionProductLine(models.Model):
+class MrpProductionProductLine(osv.Model):
     _inherit = 'mrp.production.product.line'
 
     def onchange_product(self, cr, uid, ids, product_id, context=None):
