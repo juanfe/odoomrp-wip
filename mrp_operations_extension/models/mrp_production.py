@@ -16,10 +16,13 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, exceptions, _
+from openerp import api
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+from openerp import exceptions
 
 
-class MrpProduction(models.Model):
+class MrpProduction(osv.Model):
     _inherit = 'mrp.production'
 
     @api.multi
@@ -70,20 +73,24 @@ class MrpProduction(models.Model):
         return res
 
 
-class MrpProductionProductLine(models.Model):
+class MrpProductionProductLine(osv.Model):
     _inherit = 'mrp.production.product.line'
 
-    work_order = fields.Many2one('mrp.production.workcenter.line',
-                                 'Work Order')
+    _columns = {
+        'work_order': fields.many2one('mrp.production.workcenter.line',
+                                      'Work Order'),
+    }
 
 
-class MrpProductionWorkcenterLine(models.Model):
+class MrpProductionWorkcenterLine(osv.Model):
     _inherit = 'mrp.production.workcenter.line'
 
-    product_line = fields.One2many('mrp.production.product.line',
-                                   'work_order', string='Product Lines')
-    routing_wc_line = fields.Many2one('mrp.routing.workcenter',
-                                      string='Routing WC Line')
-    do_production = fields.Boolean(string='Produce here')
-    time_start = fields.Float(string="Time Start")
-    time_stop = fields.Float(string="Time Stop")
+    _columns = {
+        'product_line': fields.one2many('mrp.production.product.line',
+                                   'work_order', string='Product Lines'),
+        'routing_wc_line': fields.many2one('mrp.routing.workcenter',
+                                      string='Routing WC Line'),
+        'do_production': fields.boolean(string='Produce here'),
+        'time_start': fields.float(string="Time Start"),
+        'time_stop': fields.float(string="Time Stop"),
+    }

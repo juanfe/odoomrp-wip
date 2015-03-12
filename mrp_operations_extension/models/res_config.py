@@ -16,12 +16,14 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp.osv import fields, osv
 
 
-class MrpConfigSettings(models.TransientModel):
+class MrpConfigSettings(osv.TransientModel):
     _inherit = 'mrp.config.settings'
 
-    group_mrp_workers = fields.Boolean(
-        string='Manage operators in work centers ',
-        implied_group='mrp_operations_extension.group_mrp_workers')
+    _columns = {
+        'group_mrp_workers': fields.boolean(
+            string='Manage operators in work centers ',
+            implied_group='mrp_operations_extension.group_mrp_workers'),
+    }

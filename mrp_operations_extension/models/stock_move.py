@@ -16,11 +16,13 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp.osv import fields, osv
 
 
-class StockMove(models.Model):
+class StockMove(osv.Model):
     _inherit = "stock.move"
 
-    work_order = fields.Many2one('mrp.production.workcenter.line',
-                                 string='Work Order')
+    _columns = {
+        'work_order': fields.many2one('mrp.production.workcenter.line',
+                                 string='Work Order'),
+    }

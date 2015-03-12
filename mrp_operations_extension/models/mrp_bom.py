@@ -16,11 +16,13 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
+from openerp import api
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 import math
 
 
-class MrpBom(models.Model):
+class MrpBom(osv.Model):
     _inherit = 'mrp.bom'
 
     @api.model
@@ -83,8 +85,10 @@ class MrpBom(models.Model):
         return {}
 
 
-class MrpBomLine(models.Model):
+class MrpBomLine(osv.Model):
     _inherit = 'mrp.bom.line'
 
-    operation = fields.Many2one(
-        comodel_name='mrp.routing.workcenter', string='Consumed in')
+    _columns = {
+        'operation': fields.many2one('mrp.routing.workcenter',
+                                     string='Consumed in'),
+    }

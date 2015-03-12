@@ -16,11 +16,13 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, _
-from openerp.addons import decimal_precision as dp
+from openerp.tools.translate import _
+#from openerp.addons import decimal_precision as dp
+from openerp import api
+from openerp.osv import fields, osv
 
 
-class MrpRouting(models.Model):
+class MrpRouting(osv.Model):
     _inherit = 'mrp.routing'
 
     @api.one
@@ -34,18 +36,20 @@ class MrpRouting(models.Model):
                             "'Produce here' check marked."))
 
 
-class MrpRoutingWorkcenter(models.Model):
+class MrpRoutingWorkcenter(osv.Model):
     _inherit = 'mrp.routing.workcenter'
 
-    operation = fields.Many2one('mrp.routing.operation', string='Operation')
-    op_wc_lines = fields.One2many(
-        'mrp.operation.workcenter', 'routing_workcenter',
-        string='Possible work centers for this operation')
-    do_production = fields.Boolean(
-        string='Produce here',
-        help="If enabled, the production and movement to stock of the final "
-             "products will be done in this operation. There can be only one "
-             "operation per route with this check marked.")
+    _columns = {
+        'operation': fields.many2one('mrp.routing.operation', string='Operation'),
+        'op_wc_lines': fields.one2many(
+            'mrp.operation.workcenter', 'routing_workcenter',
+            string='Possible work centers for this operation'),
+        'do_production': fields.boolean(
+            string='Produce here',
+            help="If enabled, the production and movement to stock of the final "
+                 "products will be done in this operation. There can be only one "
+                 "operation per route with this check marked."),
+    }
 
     @api.constrains('op_wc_lines')
     def _check_default_op_wc_lines(self):
@@ -88,27 +92,30 @@ class MrpRoutingWorkcenter(models.Model):
                 break
 
 
-class MrpOperationWorkcenter(models.Model):
+class MrpOperationWorkcenter(osv.Model):
     _name = 'mrp.operation.workcenter'
     _description = 'MRP Operation Workcenter'
 
-    workcenter = fields.Many2one(
-        'mrp.workcenter', string='Workcenter', required=True)
-    routing_workcenter = fields.Many2one(
-        'mrp.routing.workcenter', 'Routing workcenter', required=True)
-    time_efficiency = fields.Float('Efficiency factor')
-    capacity_per_cycle = fields.Float('Capacity per cycle')
-    time_cycle = fields.Float('Time for 1 cycle (hours)',
-                              help="Time in hours for doing one cycle.")
-    time_start = fields.Float('Time before prod.',
-                              help="Time in hours for the setup.")
-    time_stop = fields.Float('Time after prod.',
-                             help="Time in hours for the cleaning.")
-    op_number = fields.Integer('# operators', default='0')
-    op_avg_cost = fields.Float(
-        string='Operator avg. cost',
-        digits=dp.get_precision('Product Price'))
-    default = fields.Boolean('Default')
+    _columns = {
+        'workcenter': fields.many2one(
+            'mrp.workcenter', string='Workcenter', required=True),
+        'routing_workcenter': fields.many2one(
+            'mrp.routing.workcenter', 'Routing workcenter', required=True),
+        'time_efficiency': fields.float('Efficiency factor'),
+        'capacity_per_cycle': fields.float('Capacity per cycle'),
+        'time_cycle': fields.float('Time for 1 cycle (hours)',
+                                  help="Time in hours for doing one cycle."),
+        'time_start': fields.float('Time before prod.',
+                                  help="Time in hours for the setup."),
+        'time_stop': fields.float('Time after prod.',
+                                 help="Time in hours for the cleaning."),
+        'op_number': fields.integer('# operators', default='0'),
+        'op_avg_cost': fields.float(
+            string='Operator avg. cost'),
+        # TODO checke the dp.get_precision, how to do
+        #    digits=dp.get_precision('Product Price')),
+        'default': fields.boolean('Default'),
+    }
 
     @api.one
     @api.onchange('workcenter')

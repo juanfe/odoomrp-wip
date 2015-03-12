@@ -16,20 +16,21 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp.osv import fields, osv
 
-
-class MrpRoutingOperation(models.Model):
+class MrpRoutingOperation(osv.Model):
     _name = 'mrp.routing.operation'
     _description = 'MRP Routing Operation'
 
-    name = fields.Char('Name', required=True)
-    code = fields.Char('Code')
-    description = fields.Text('Description')
-    steps = fields.Text('Relevant Steps')
-    workcenters = fields.Many2many(
-        'mrp.workcenter', 'mrp_operation_workcenter_rel', 'operation',
-        'workcenter', 'Work centers')
-    op_number = fields.Integer('# operators', default='0')
-    picking_type_id = fields.Many2one(
-        'stock.picking.type', string='Picking Type')
+    _columns = {
+        'name': fields.char('Name', required=True),
+        'code': fields.char('Code'),
+        'description': fields.text('Description'),
+        'steps': fields.text('Relevant Steps'),
+        'workcenters': fields.many2many(
+            'mrp.workcenter', 'mrp_operation_workcenter_rel', 'operation',
+            'workcenter', 'Work centers'),
+        'op_number': fields.integer('# operators', default='0'),
+        'picking_type_id': fields.many2one(
+            'stock.picking.type', string='Picking Type'),
+    }
