@@ -89,9 +89,6 @@ class Machinery(osv.Model):
         'enrolldate': fields.date('Enrollment date', required=True,
                                   default=lambda self:
                                       fields.date.today(self)),
-                                  # TODO change by context_today like of way
-                                  #    fields.date.context_today(self)),
-                                  # context_today require (model, cr, uid)
         'ambit': fields.selection([('local', 'Local'), ('national', 'National'),
                               ('international', 'International')],
                              'Ambit', default='local'),
@@ -104,6 +101,9 @@ class Machinery(osv.Model):
         'policy': fields.char('Machine policy'),
         'users': fields.one2many('machinery.users', 'machine', 'Machine Users'),
         'power': fields.char('Power (Kw)'),
+    }
+    _defaults = {
+        'enrolldate': fields.date.context_today,
     }
 
 
