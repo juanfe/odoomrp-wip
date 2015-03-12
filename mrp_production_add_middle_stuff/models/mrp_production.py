@@ -17,10 +17,12 @@
 #
 ##############################################################################
 
-from openerp import models, fields
+from openerp.osv import fields, osv
 
 
-class MrpProductionProductLine(models.Model):
+class MrpProductionProductLine(osv.Model):
     _inherit = 'mrp.production.product.line'
 
-    addition = fields.Boolean('Added Post-startup')
+    _columns = {
+        'addition': fields.boolean('Added Post-startup'),
+    }
