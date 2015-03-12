@@ -16,10 +16,10 @@
 #
 ##############################################################################
 
-from openerp import fields, models
+from openerp.osv import fields, osv
 
 
-class MrpWorkOrderProduce(models.TransientModel):
+class MrpWorkOrderProduce(osv.TransientModel):
     _name = "mrp.work.order.produce"
 
     def default_get(self, cr, uid, var_fields, context=None):
@@ -119,25 +119,29 @@ class MrpWorkOrderProduce(models.TransientModel):
                     done += move.product_qty
         return (prod.product_qty - done) or prod.product_qty
 
-    product_id = fields.Many2one('product.product',
-                                 string='Product', default=_get_product_id)
-    product_qty = fields.Float('Select Quantity',
+    _columns = {
+        'product_id': fields.many2one('product.product',
+                                 string='Product', default=_get_product_id),
+        'product_qty': fields.float('Select Quantity',
                                digits=(12, 6), required=True,
-                               default=_get_product_qty)
-    mode = fields.Selection([('consume_produce', 'Consume & Produce'),
+                               default=_get_product_qty),
+        'mode': fields.selection([('consume_produce', 'Consume & Produce'),
                              ('consume', 'Consume Only')],
                             string='Mode', required=True,
-                            default='consume')
-    lot_id = fields.Many2one('stock.production.lot', 'Lot')
-    consume_lines = fields.One2many('mrp.product.produce.line',
+                            default='consume'),
+        'lot_id': fields.many2one('stock.production.lot', 'Lot'),
+        'consume_lines': fields.one2many('mrp.product.produce.line',
                                     'work_produce_id',
-                                    string='Products Consumed')
-    track_production = fields.Boolean('Track production', default=_get_track)
+                                    string='Products Consumed'),
+        'track_production': fields.boolean('Track production', default=_get_track),
 
-    final_product = fields.Boolean(string='Final Product to Stock')
+        'final_product': fields.boolean(string='Final Product to Stock'),
+    }
 
 
-class MrpProductProduceLine(models.TransientModel):
+class MrpProductProduceLine(osv.TransientModel):
     _inherit = "mrp.product.produce.line"
 
-    work_produce_id = fields.Many2one('mrp.work.order.produce')
+    _columns = {
+        'work_produce_id': fields.many2one('mrp.work.order.produce'),
+    }
