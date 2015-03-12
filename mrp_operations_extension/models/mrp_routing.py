@@ -17,7 +17,7 @@
 ##############################################################################
 
 from openerp.tools.translate import _
-#from openerp.addons import decimal_precision as dp
+from openerp.addons import decimal_precision as dp
 from openerp import api
 from openerp.osv import fields, osv
 
@@ -111,9 +111,8 @@ class MrpOperationWorkcenter(osv.Model):
                                  help="Time in hours for the cleaning."),
         'op_number': fields.integer('# operators', default='0'),
         'op_avg_cost': fields.float(
-            string='Operator avg. cost'),
-        # TODO checke the dp.get_precision, how to do
-        #    digits=dp.get_precision('Product Price')),
+            string='Operator avg. cost',
+            digits_compute=dp.get_precision('Product Price')),
         'default': fields.boolean('Default'),
     }
 

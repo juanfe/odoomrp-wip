@@ -18,7 +18,7 @@
 
 from openerp import api
 from openerp.osv import fields, osv
-#from openerp.addons import decimal_precision as dp
+from openerp.addons import decimal_precision as dp
 
 
 class MrpWorkcenter(osv.Model):
@@ -46,7 +46,6 @@ class MrpWorkcenter(osv.Model):
         'op_number': fields.integer(
             string='# Operators', compute=_operators_number_avg_cost),
         'op_avg_cost': fields.float(
-            string='Operator average cost'),
-            # TODO see how to add get_precision
-            #digits=dp.get_precision('Product Price')),
+            string='Operator average cost',
+            digits_compute=dp.get_precision('Product Price')),
     }
