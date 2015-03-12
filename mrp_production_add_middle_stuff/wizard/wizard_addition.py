@@ -17,20 +17,25 @@
 #
 ##############################################################################
 
-from openerp import models, fields, api, exceptions, _
+from openerp import exceptions
+from openerp import api
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 import openerp.addons.decimal_precision as dp
 
 
-class WizProductionProductLine(models.TransientModel):
+class WizProductionProductLine(osv.TransientModel):
     _name = 'wiz.production.product.line'
 
-    product_id = fields.Many2one('product.product', 'Product', required=True)
-    product_qty = fields.Float(
-        'Product Quantity', digits=dp.get_precision('Product Unit of Measure'),
-        required=True)
-    production_id = fields.Many2one(
-        'mrp.production', 'Production Order', select=True,
-        default=lambda self: self.env.context.get('active_id', False))
+    _columns = {
+        'product_id': fields.many2one('product.product', 'Product', required=True),
+        'product_qty': fields.float(
+            'Product Quantity', digits_compute=dp.get_precision('Product Unit of Measure'),
+            required=True),
+        'production_id': fields.many2one(
+            'mrp.production', 'Production Order', select=True,
+            default=lambda self: self.env.context.get('active_id', False)),
+    }
 
     def _prepare_product_addition(self, product, product_qty, production):
         addition_vals = {'product_id': product.id,
